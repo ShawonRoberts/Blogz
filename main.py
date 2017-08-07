@@ -21,7 +21,7 @@ class BlogHandler(webapp2.RequestHandler):
         """
 
         # TODO - filter the query so that only posts by the given user
-        
+
         query = Post.all().filter("author = ", user.username).order('-created')
         return query.fetch(limit=limit, offset=offset)
 
@@ -285,6 +285,13 @@ class LoginHandler(BlogHandler):
             self.redirect('/blog/newpost')
         else:
             self.render_login_form(error="Invalid password")
+class WordUpHandler(BlogHandler):
+    def render_WordUP(self, error = "NotFound"):
+        t = jinja_env.get_template("wordup.html")
+        response = t.render(error=error)
+        self.response.out.write(response)
+    def get(self):
+        self.render_WordUP()
 
 class LogoutHandler(BlogHandler):
 
@@ -300,7 +307,9 @@ app = webapp2.WSGIApplication([
     webapp2.Route('/blog/<username:[a-zA-Z0-9_-]{3,20}>', BlogIndexHandler),
     ('/signup', SignupHandler),
     ('/login', LoginHandler),
-    ('/logout', LogoutHandler)
+    ('/logout', LogoutHandler),
+    ('/wordUP',WordUpHandler)
+
 ], debug=True)
 
 # A list of paths that a user must be logged in to access
